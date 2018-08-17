@@ -1,0 +1,593 @@
+---
+title: "Homework 6"
+author: "Mengyu Xie, Adrian Bandolon"
+date: "March 26, 2018"
+output:
+  html_document: default
+  pdf_document: default
+subtitle: Applied Machine Learning--CS 498
+header-includes:
+- \usepackage{multirow}
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+---
+
+```{r echo=TRUE, error=FALSE, warning=FALSE, include=FALSE}
+# load required libraries
+
+library(MASS)
+library(glmnet)
+library(caret)
+library(boot)
+library(nlme)
+library(car)
+library(xtable); options(xtable.comment = FALSE)
+```
+
+# Problem 1:
+ 
++ The data set used for this problem are features of music and the latitude and _**Longitude**_ from which that music originates. 
++ This data set was from **UCI Machine Learning Repository.** The data set can be found here: **[https://archive.ics.uci.edu/ml/datasets/Geographical+Original+of+Music](https://archive.ics.uci.edu/ml/datasets/Geographical+Original+of+Music)**
+
+## Part 1:
++ For this part, we attempt to build a linear regression model for _**Longitude**_ and _**Latitude**_ against the features.
+
+```{r echo=FALSE, error=FALSE, warning=FALSE}
+
+setwd(
+  "/media/adrian/Files/Documents/MCS-DS/AppliedMachineLearning_CS498/HW6CS498AML"
+)
+
+results<-array(dim=8)
+wdat1<-read.csv('Geographical Original of Music/default_plus_chromatic_features_1059_tracks.txt', header=FALSE)
+colnames(wdat1)[117] <- "Latitude"
+colnames(wdat1)[118] <- "Longitude"
+DataWithoutLatitude<-subset(wdat1, select = -Latitude )
+DataWithoutLongitude<-subset(wdat1, select = -Longitude )
+
+#-----------------------------Simple linear model-----------------#
+#simple linear model for longitude
+#obtain R-squared and residual plot
+FitLong<-lm(DataWithoutLatitude$Longitude~.,data=DataWithoutLatitude)
+#summary(FitLong)$r.squared
+mse1<-mean(summary(FitLong)$residuals^2)
+results[1]=summary(FitLong)$r.squared
+results[2]=mse1
+
+par(mfrow=c(2,2))
+plot(FitLong, which = c(1:4))
+```
+
+_**Figure 1.** Diagnostic plots for the unregularized linear regression model of Longitude vs. features_
+
+```{r echo=FALSE, error=FALSE, warning=FALSE}
+#simple linear model for latitude
+#obtain R-squared and residual plot
+FitLat<-lm(DataWithoutLongitude$Latitude~.,data=DataWithoutLongitude)
+#summary(FitLat)$r.squared
+mse2<-mean(summary(FitLat)$residuals^2)
+results[3]=summary(FitLat)$r.squared
+results[4]=mse2
+
+par(mfrow=c(2,2))
+plot(FitLat, which = c(1:4))
+```
+
+_**Figure 2.** Diagnostic plots for the unregularized linear regression model of Latitude vs. features_
+
++ From the plots above we can see that there are some outliers that needs to be addressed, but we are ignoring these outliers in this exercise.
+
+## Part 2:
++ For this part, we used a Box-Cox transformation to model _**Longitude**_ and _**Latitude**_ against the music features.
+
+```{r echo=FALSE, error=FALSE, warning=FALSE}
+#-------------------------BoxCox--------------------------#
+#https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r
+#a few helper functions
+#to transform back
+#https://stat.ethz.ch/pipermail/r-help/2007-June/134480.html
+invBoxCox <- function(x, lambda)
+  if (lambda == 0) exp(x) else (lambda*x + 1)^(1/lambda)
+#to manual calculate R-squared
+#https://stackoverflow.com/questions/40901445/function-to-calculate-r2-r-squared-in-r
+rsq <- function (x, y) cor(x, y) ^ 2
+#to calculate RMSE/MSE
+#https://stackoverflow.com/questions/26237688/rmse-root-mean-square-deviation-calculation-in-r
+RMSE = function(m, o){
+  sqrt(mean((m - o)^2))
+}
+MSE = function(m, o){
+  mean((m - o)^2)
+}
+```
+
++ Box-Cox does not work well with negative numbers. Constants were added to _**Longitude**_ ($180$) and _**Latitude**_ ($90$) to remove any negative values.
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, out.width="50%", fig.align='center'}
+#data for BoxCox transformation
+BoxDataWithoutLatitude<-DataWithoutLatitude
+BoxDataWithoutLongitude<-DataWithoutLongitude
+BoxDataWithoutLatitude$Longitude<-BoxDataWithoutLatitude$Longitude+180
+BoxDataWithoutLongitude$Latitude<-BoxDataWithoutLongitude$Latitude+90
+FitLong<-lm(BoxDataWithoutLatitude$Longitude~.,data=BoxDataWithoutLatitude)
+FitLat<-lm(BoxDataWithoutLongitude$Latitude~.,data=BoxDataWithoutLongitude)
+#search lambda and obtain transformed fitted value, then transform back
+#obtain R-squared, MSE, residucal plot
+bc <- boxcox(FitLong,lambda = seq(-2, 4, 1/10))
+```
+
+_**Figure 3.** Box-Cox transformation plot of lambda vs. log-likelihood for the Longitude model_
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, out.width="50%", fig.align='center'}
+lambda <- bc$x[which.max(bc$y)]
+BoxFitLong<- lm(((BoxDataWithoutLatitude$Longitude^lambda-1)/lambda) ~.,data=BoxDataWithoutLatitude)
+LongFitted<-invBoxCox(BoxFitLong$fitted.values,lambda)
+Rsquared<-rsq(BoxDataWithoutLatitude$Longitude,LongFitted)
+results[5]<-Rsquared
+MSELong<-MSE(LongFitted,BoxDataWithoutLatitude$Longitude)
+results[6]<-MSELong
+resnew<- BoxDataWithoutLatitude$Longitude-LongFitted
+bc <- boxcox(FitLat,lambda = seq(-2, 10, 1/10))
+```
+
+_**Figure 4.** Box-Cox transformation plot of lambda vs. log-likelihood for the Latitude model_
+
+
+```{r echo=FALSE, error=FALSE, warning=FALSE}
+lambda <- bc$x[which.max(bc$y)]
+BoxFitLat<- lm(((BoxDataWithoutLongitude$Latitude^lambda-1)/lambda) ~.,data=BoxDataWithoutLongitude)
+LatFitted<-invBoxCox(BoxFitLat$fitted.values,lambda)
+Rsquared1<-rsq(BoxDataWithoutLongitude$Latitude,LatFitted)
+results[7]<-Rsquared
+MSELat<-MSE(LatFitted,BoxDataWithoutLongitude$Latitude)
+results[8]<-MSELat
+resnew<- BoxDataWithoutLongitude$Latitude-LatFitted
+
+par(mfrow=c(2,2))
+plot(LongFitted,resnew,xlab = 'Fitted Values',ylab = 'Residual',main="Longitude Unregularized BoxCox")
+plot(LatFitted,resnew,xlab = 'Fitted Values',ylab = 'Residual',main="Latitude Unregularized BoxCox")
+```
+
+_**Figure 5.** Box-Cox transformation residual vs. fitted values for the Longitude (left) and Latitude (right) unregularized models._
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results="asis"}
+rsq1 <- summary(FitLong)$r.squared
+rsq2 <- summary(FitLat)$r.squared
+
+mses1 <- rbind(mse1, mse2, MSELong, MSELat) 
+rownames(mses1) <- c("Longitude Linear Model", "Latitude Linear Model", "Box-Cox Transformed Longitude Model", "Box-Cox Transformed Latitude Model")
+
+rsqs1 <- rbind(rsq1, rsq2, Rsquared, Rsquared1)
+rownames(rsqs1) <- c("Longitude Linear Model", "Latitude Linear Model", "Box-Cox Transformed Longitude Model", "Box-Cox Transformed Latitude Model")
+
+lm.stats <- cbind(mses1, rsqs1); colnames(lm.stats) <- c("Mean Squared Error", "R-Squared")
+print(xtable(lm.stats))
+```
+
+_**Table 1.** Mean Squared Error and R$^2$ values for the Unregularized and Box-Cox transformed Longitude and Latitude models of music features._
+
++ Based on the results from _**Table 1**_, we can see that the Box-Cox transformed models does not improve on the unregularized linear model. Both MSE and R$^2$ values are only minimally different from each other.
+
+## Part 3:
+
++ We used `cv.glmnet` to regularize our _**Longitude**_ and _**Latitude**_ models of music features and perform 10-fold cross-validation using different regularizers. 
++ One regularization parameter for `Ridge` ($\alpha = 0$) and `LASSO` ($\alpha = 1$), and three for `ElasticNet` ($\alpha = 0.2, 0.5, 0.7$) was used.
++ For comparison, we used `cv.glm` to perform 10-fold cross-validation of the simple unregularized model.
++ The regularization coefficient with the minimum error (Lambda Min), number of variables, and mean of mean-squared error from cross-validation (Mean MSE) for each model is provided in two tables: _**Table 2**_, and _**Table 3**_. 
+
+\pagebreak
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis', fig.align='center'}
+#-------------------------Regularization-------------------#
+#https://www4.stat.ncsu.edu/~post/josh/LASSO_Ridge_Elastic_Net_-_Examples.html
+#https://stackoverflow.com/questions/24018585/how-to-extract-the-cv-errors-for-optimal-lambda-using-glmnet-package
+
+Longcompare <- data.frame(matrix(ncol = 6, nrow = 3))
+Latcompare <- data.frame(matrix(ncol = 6, nrow = 3))
+Col <- c("Simple", "Ridge","LASSO", "ElasticNet0.2","ElasticNet0.5","ElasticNet0.7")
+Row<-c("Lambda.min","Variable.number","MSE.mean")
+colnames(Longcompare) <- Col
+colnames(Latcompare) <- Col
+rownames(Longcompare)<-Row
+rownames(Latcompare)<-Row
+
+#using cv.glm for crossvalidated simple linear model, 
+#so that the result can be compared with results from cv.glmnet
+#mean MSE from 10 fold crossvalidation is used as comparison rubrics 
+set.seed(1234)
+SimpleLong <- glm(Longitude~., data = DataWithoutLatitude)
+CVLong <- cv.glm(DataWithoutLatitude, SimpleLong, K = 10)
+Longcompare$Simple[3]<-CVLong$delta[1]
+Longcompare$Simple[2]<-116
+x<-model.matrix(DataWithoutLatitude$Longitude~.,data=DataWithoutLatitude)
+for (i in c(0,2,5,7,10)) {
+  CVfit<-cv.glmnet(x, DataWithoutLatitude$Longitude, type.measure="mse", 
+                                            alpha=i/10)
+  assign(paste("CVLambda",i,sep = ""), CVfit$lambda.min)
+  assign(paste("CVVariable",i,sep = ""),CVfit$nzero[CVfit$lambda == CVfit$lambda.min])
+  assign(paste("CVmse",i,sep = ""), CVfit$cvm[CVfit$lambda == CVfit$lambda.min])
+}
+
+#Lambda.min is the regularization coefficient that produces the minimum error
+#it is obtained by cv.glmnet search
+#crossvalidated MSE is produced at the mean time of lambda search
+#mean MSE from 10 fold crossvalidation is used as comparison rubrics
+Longcompare$LASSO[1]<-CVLambda10
+Longcompare$Ridge[1]<-CVLambda0
+Longcompare$ElasticNet0.2[1]<-CVLambda2
+Longcompare$ElasticNet0.5[1]<-CVLambda5
+Longcompare$ElasticNet0.7[1]<-CVLambda7
+
+Longcompare$LASSO[2]<-CVVariable10
+Longcompare$Ridge[2]<-CVVariable0
+Longcompare$ElasticNet0.2[2]<-CVVariable2
+Longcompare$ElasticNet0.5[2]<-CVVariable5
+Longcompare$ElasticNet0.7[2]<-CVVariable7
+
+Longcompare$LASSO[3]<-CVmse10
+Longcompare$Ridge[3]<-CVmse0
+Longcompare$ElasticNet0.2[3]<-CVmse2
+Longcompare$ElasticNet0.5[3]<-CVmse5
+Longcompare$ElasticNet0.7[3]<-CVmse7
+
+rownames(Longcompare) <- c("Lambda Min", "Number of Variables", "Mean MSE")
+colnames(Longcompare) <- c("Simple", "Ridge", "LASSO", "Elastic Net (0.2)", "Elastic Net (0.5)", "Elastic Net (0.7)")
+#Latitude regularized
+SimpleLat<-glm(Latitude~., data = DataWithoutLongitude)
+CVLat <- cv.glm(DataWithoutLongitude, SimpleLat, K = 10)
+Latcompare$Simple[3]<-CVLat$delta[1]
+Latcompare$Simple[2]<-116
+x<-model.matrix(DataWithoutLongitude$Latitude~.,data=DataWithoutLongitude)
+for (i in c(0,2,5,7,10)) {
+  CVfit<-cv.glmnet(x, DataWithoutLongitude$Latitude, type.measure="mse", 
+                   alpha=i/10)
+  #plot(CVfit)
+  assign(paste("CVVariable",i,sep = ""),CVfit$nzero[CVfit$lambda == CVfit$lambda.min])
+  assign(paste("CVLambda",i,sep = ""), CVfit$lambda.min)
+  assign(paste("CVmse",i,sep = ""), CVfit$cvm[CVfit$lambda == CVfit$lambda.min])
+}
+
+
+Latcompare$LASSO[1]<-CVLambda10
+Latcompare$Ridge[1]<-CVLambda0
+Latcompare$ElasticNet0.2[1]<-CVLambda2
+Latcompare$ElasticNet0.5[1]<-CVLambda5
+Latcompare$ElasticNet0.7[1]<-CVLambda7
+
+Latcompare$LASSO[2]<-CVVariable10
+Latcompare$Ridge[2]<-CVVariable0
+Latcompare$ElasticNet0.2[2]<-CVVariable2
+Latcompare$ElasticNet0.5[2]<-CVVariable5
+Latcompare$ElasticNet0.7[2]<-CVVariable7
+
+Latcompare$LASSO[3]<-CVmse10
+Latcompare$Ridge[3]<-CVmse0
+Latcompare$ElasticNet0.2[3]<-CVmse2
+Latcompare$ElasticNet0.5[3]<-CVmse5
+Latcompare$ElasticNet0.7[3]<-CVmse7
+rownames(Latcompare) <- c("Lambda Min", "Number of Variables", "Mean MSE")
+colnames(Latcompare) <- c("Simple", "Ridge", "LASSO", "Elastic Net (0.2)", "Elastic Net (0.5)", "Elastic Net (0.7)")
+
+print(xtable(Longcompare))
+```
+
+_**Table 2.** 10 fold cross-validation of the Longitude simple unregularized model and models using different regularizers._
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis', fig.align='center'}
+print(xtable(Latcompare))
+```
+
+_**Table 3.** 10 fold cross-validation of the Latitude simple unregularized model and models using different regularizers._
+
++ The regularized models only slightly improved the regression, but the "best" regularization varies with the current random state (i.e. `set.seed(1234)`). Although the differences between models are largely minimal, `ElasticNet` with $\alpha = 0.2$ is the best for predicting _**Latitude**_, while `LASSO` is the best for predicting _**Longitude**_.
++ The MSE of un-regularized (_**Table 1**_) and regularized (_**Table 2**_, _**Table 3**_) models seem to not be significantly different from each other. Although the un-regularized seem slightly better.
++ Based on the mean-squared error values below (_**Table 2**_, _**Table 3**_) there seems to be no difference between the models produced using different regularizers.
+
+\pagebreak
+
+# Problem 2:
+
++ We used the dataset that gives whether a Taiwanese credit card user defaults against a variety of features (found here: **[http://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients](http://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients)**)
+
+## Part 1:
+
++ Here we used logistic regression to predict whether the customer defaults. Outliers were ignored.
++ We split the dataset into training and test datasets. 
++ There were $23$ variables that could be used to predict if a customer defaults. In an effort to reduce the number of variables used in this model we:
+  
+    1. From the training dataset we created a model with all the variables(`glm.full`).
+    2. From `glm.full` we measured the _**Variance Inflation Factor (VIF)**_ and used to this to remove from the model *collinear* variables (those with VIF $< 2$). Collinearity refers to the possibility of linear relationships among the explanatory variables. For models built for prediction, collinearity is not really an issue, but we feel that parsimony is important. Some authors suggest that VIF $< 5$ should be used to judge collinearity, we chose VIF $< 2$ simply to reduce the number of variables in our model further. This choice can be justified by the results we obtain (see _**Table 5**_ below). `glm.vif` is the model produced in this step.
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis'}
+setwd(
+  "/media/adrian/Files/Documents/MCS-DS/AppliedMachineLearning_CS498/HW6CS498AML"
+)
+
+source(
+"/media/adrian/Files/Documents/MCS-DS/AppliedMachineLearning_CS498/rscripts/panelCor.R"
+)
+
+debt <- read.csv("credit_card.csv", header=TRUE, sep=",")
+
+debt$will_default <- as.factor(debt$will_default)
+debt$SEX <- as.factor(debt$SEX)
+debt$EDUCATION <- as.factor(debt$EDUCATION)
+debt$MARRIAGE <- as.factor(debt$MARRIAGE)
+
+## partition to train and test data sets
+Train <- createDataPartition(debt$will_default, p=0.6, list=FALSE)
+training <- debt[Train, ]
+testing <- debt[-Train, ]
+
+# some data exploration
+
+sex.tab <- with(debt, table(SEX, will_default))
+educ.tab <- with(debt, table(EDUCATION, will_default))
+mar.tab <- with(debt, table(MARRIAGE, will_default))
+
+glm.full <-
+  glm(
+    will_default ~ LIMIT_BAL + SEX + EDUCATION + MARRIAGE + AGE + PAY_0 + PAY_2 +
+      PAY_3 + PAY_4 + PAY_5 + PAY_6 + BILL_AMT1 + BILL_AMT2 + BILL_AMT3 + BILL_AMT4 +
+      BILL_AMT5 + BILL_AMT6 + PAY_AMT1 + PAY_AMT2 + PAY_AMT3 + PAY_AMT4 + PAY_AMT5 +
+      PAY_AMT6, data = training, family = binomial
+  )
+
+# check for collinearity with VIF in car package before doing model selection
+
+glm.full.vif <- vif(glm.full)
+
+print(xtable(glm.full.vif, size="tiny"))
+```
+
+_**Table 4.** Variance Inflation Factor values for the different variables in the `glm.full` model. Variables with $<2$ GVIF were dropped from the model._
+
+  3. The number of variables were further reduced using  `drop1` where the least significant variable based on *likelihood ratio tests* was dropped from the `glm.vif` model. At this point there was a manageable number of variables. More variables could be added or taken away manually from the final model based on the increase or decrease in accuracy. The final model (`mod.fit`) we settled on was: 
+
+\begin{centering}
+$\mathbf{will\_default \sim LIMIT\_BAL  + EDUCATION + AGE + PAY\_0 + PAY\_AMT1 + PAY\_AMT2}$
+\end{centering}
+
+  4. To compare the `glm.full`, `glm.vif` and `mod.fit` we used the **test** dataset to run 10-fold crossvalidation.  As can be seen from the table below, the differences in accuracy, sensitivity and specificity between the models are minimal. Again, the final model was chosen simply because it is concise and just as accurate.
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis'}
+ctrl <-
+  trainControl(method = "repeatedcv",
+               number = 10,
+               savePredictions = TRUE)
+
+mod.fit.full <-
+  train(
+    will_default ~ LIMIT_BAL + SEX + EDUCATION + MARRIAGE +
+      AGE + PAY_0 + PAY_2 + PAY_3 + PAY_4 + PAY_5 + PAY_6 +
+      BILL_AMT1 + BILL_AMT2 + BILL_AMT3 + BILL_AMT4 +
+      BILL_AMT5 + BILL_AMT6 + PAY_AMT1 + PAY_AMT2 +
+      PAY_AMT3 + PAY_AMT4 + PAY_AMT5 + PAY_AMT6,
+    data = training,
+    method = "glm",
+    family = "binomial",
+    trControl = ctrl,
+    tuneLength = 5
+  )
+
+pred1 = predict(mod.fit.full, newdata = testing)
+mod.full.conf <-
+  confusionMatrix(data = pred1, testing$will_default, positive = "1")
+
+mod.fit.vif <-
+  train(
+    will_default ~ LIMIT_BAL + SEX + EDUCATION + MARRIAGE +
+      AGE + PAY_0 + PAY_AMT1 + PAY_AMT2 + PAY_AMT3 +
+      PAY_AMT4 + PAY_AMT5 + PAY_AMT6,
+    data = training,
+    method = "glm",
+    family = "binomial",
+    trControl = ctrl,
+    tuneLength = 5
+  )
+
+pred2 = predict(mod.fit.vif, newdata = testing)
+mod.vif.conf <-
+  confusionMatrix(data = pred2, testing$will_default, positive = "1")
+
+# following Occam's razor here, using the least number for variables to
+# explain/predict.
+
+# more variables were removed from the model using backwards model selection
+# variables were added or taken out from mod.fit.vif model based on the 
+# increase or decrease in accuracy.
+# final model (mod.fit) is the model where accuracy is highest.
+# adding or taking away more variables will decrease accuracy
+
+mod.fit <-
+  train(
+    will_default ~ LIMIT_BAL  + EDUCATION + AGE + PAY_0 + PAY_AMT1 + PAY_AMT2,
+    data = training,
+    method = "glm",
+    family = "binomial",
+    trControl = ctrl,
+    tuneLength = 5
+  )
+
+pred3 = predict(mod.fit, newdata = testing)
+mod.fit.conf <-
+  confusionMatrix(data = pred3, testing$will_default, positive = "1")
+
+accu <-
+  cbind(mod.full.conf$overall[1],
+        mod.vif.conf$overall[1],
+        mod.fit.conf$overall[1])
+sens <-
+  cbind(mod.full.conf$byClass[1],
+        mod.vif.conf$byClass[1],
+        mod.fit.conf$byClass[1])
+spec <-
+  cbind(mod.full.conf$byClass[2],
+        mod.vif.conf$byClass[2],
+        mod.fit.conf$byClass[2])
+
+stats <- rbind(accu, spec, sens)
+colnames(stats) <- c("Full Model", "No Collinear Variables", "Final Model")
+
+print(xtable(t(stats), digits=4))
+```
+
+_**Table 5.** Accuracy, sensitivity and specificity of the full glm model (with all the variables), vif model (with variables that have a VIF$<2$ removed) and final model using the test dataset._
+
+## Part 2:
+
++ Here we try to improve upon the final model we built in the previous section by using different regularizers. As aparent from the previous section, we only need to use some of the variables (6 in this case) to achieve similar predictive accuracy as the model that uses all the variables.
+
++ For this part we only used the variables: 
+
+\begin{centering}
+\begin{quotation}
+$\mathbf{LIMIT\_BAL  + EDUCATION + AGE + PAY\_0 + PAY\_AMT1 + PAY\_AMT2}$
+\end{quotation}
+\end{centering}
+
++ As can be seen in the table below, there is a minimal ($+0.0039$) improvement in accuracy from the final model and the best regularized model (lasso).
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis'}
+#### now for some regularization
+train.X <- data.matrix(training[,c(2,4,6,7,19,20)])
+train.y <- as.numeric(training[,25])
+
+# changed because glmnet is picky
+train.y[train.y==1] <-c("notDefault")
+train.y[train.y==2] <-c("default")
+train.y <- data.matrix(train.y)
+
+ctrl2 <- trainControl(
+  method = "cv",
+  number = 10,
+  returnResamp = "all",
+  classProbs = TRUE,
+  summaryFunction = twoClassSummary,
+  savePredictions = TRUE
+)
+
+ridge.fit <- train(
+  train.X,
+  train.y,
+  method = "glmnet",
+  trControl = ctrl2,
+  metric = "ROC",
+  tuneGrid = expand.grid(alpha = 0,
+                         lambda = seq(0.001, 0.1, by = 0.001))
+) 
+
+pred4 = predict(ridge.fit, newx = testing, type = "raw")
+pred4 <- as.data.frame(pred4)
+pred4 <- cbind(pred4, train.y)
+
+pred4$gotRight[pred4$pred4==pred4$train.y] <-1
+pred4$gotRight[is.na(pred4$gotRight)] <-0
+
+pred4$TP[pred4$pred4=="default" & pred4$train.y=="default"] <- 1
+pred4$TP[is.na(pred4$TP)] <-0
+
+pred4$TN[pred4$pred4=="notDefault" & pred4$train.y=="notDefault"] <- 1
+pred4$TN[is.na(pred4$TN)] <-0
+
+pred4$FP[pred4$pred4=="default" & pred4$train.y=="notDefault"] <- 1
+pred4$FP[is.na(pred4$FP)] <-0
+
+pred4$FN[pred4$pred4=="notDefault" & pred4$train.y=="default"] <- 1
+pred4$FN[is.na(pred4$FN)] <-0
+# accuracy=(TP+TN)/(TP+TN+FP+FN)
+accu1 <- sum(pred4$gotRight/length(pred4$gotRight))
+
+# sensitivity = TP/(TP+FN)
+sens1 <- sum(pred4$TP)/(sum(pred4$TP)+sum(pred4$FN))
+
+# specificity = TN/(TN+FP)
+spec1 <- sum(pred4$TN)/(sum(pred4$TN)+sum(pred4$FP))
+
+# ridge stats
+
+stats.ridge<-rbind(accu1, spec1, sens1)
+
+# lasso regularization
+lasso.fit <- train(
+  train.X,
+  train.y,
+  method = "glmnet",
+  trControl = ctrl2,
+  metric = "ROC",
+  tuneGrid = expand.grid(alpha = 1,
+                         lambda = seq(0.001, 0.1, by = 0.001))
+) 
+
+# get the best parameter
+#lasso.fit$bestTune
+
+# get the best coefficients
+#coef(lasso.fit$finalModel, lasso.fit$bestTune$lambda)
+
+pred5 = predict(lasso.fit, newx = testing, type = "raw")
+pred5 <- as.data.frame(pred5)
+pred5 <- cbind(pred5, train.y)
+
+pred5$gotRight[pred5$pred5==pred5$train.y] <-1
+pred5$gotRight[is.na(pred5$gotRight)] <-0
+
+pred5$TP[pred5$pred5=="default" & pred5$train.y=="default"] <- 1
+pred5$TP[is.na(pred5$TP)] <-0
+
+pred5$TN[pred5$pred5=="notDefault" & pred5$train.y=="notDefault"] <- 1
+pred5$TN[is.na(pred5$TN)] <-0
+
+pred5$FP[pred5$pred5=="default" & pred5$train.y=="notDefault"] <- 1
+pred5$FP[is.na(pred5$FP)] <-0
+
+pred5$FN[pred5$pred5=="notDefault" & pred5$train.y=="default"] <- 1
+pred5$FN[is.na(pred5$FN)] <-0
+# accuracy=(TP+TN)/(TP+TN+FP+FN)
+accu2 <- sum(pred5$gotRight/length(pred5$gotRight))
+
+# sensitivity = TN/(TP+FN)
+sens2 <- sum(pred5$TP)/(sum(pred5$TP)+sum(pred5$FN))
+
+# specificity = TN/(TN+FP)
+spec2 <- sum(pred5$TN)/(sum(pred5$TN)+sum(pred5$FP))
+
+stats.lasso<-rbind(accu2, spec2, sens2)
+
+stats2 <- cbind(stats, stats.ridge, stats.lasso)
+colnames(stats2) <-
+  c(
+    "Full Model",
+    "No Collinear Variables",
+    "Final Model",
+    "Ridge Regularized Model",
+    "Lasso Regularized Model"
+  )
+
+print(xtable(t(stats2), digits=4))
+```
+_**Table 6.** Accuracy, sensitivity and specificity of the full glm model (with all the variables), vif model (with variables that have a VIF$<2$ removed), final model, ridge regularized model and lasso regularized model using the test dataset._
+
+```{r echo=FALSE, error=FALSE, warning=FALSE, results='asis'}
+# get the best parameter
+ridge.best <- ridge.fit$bestTune
+
+# get the best parameter
+lasso.best <-lasso.fit$bestTune
+
+best.params <- rbind(ridge.best, lasso.best)
+rownames(best.params)<- c("Ridge", "Lasso")
+
+print(xtable(best.params))
+```
+
+_**Table 7.** Parameters used in ridge and lasso regularization._
+
+# References:
+
+1. https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r
+2. https://stackoverflow.com/questions/40901445/function-to-calculate-r2-r-squared-in-r
+3. https://stackoverflow.com/questions/26237688/rmse-root-mean-square-deviation-calculation-in-r
+4. https://www4.stat.ncsu.edu/~post/josh/LASSO_Ridge_Elastic_Net_-_Examples.html
+5. Zuur,A., Ieno, E.N., Walker, N., Saveliev, A.A., Smith, G.M., __*Mixed Effects Models and Extensions in Ecology with R.*__ pg. 246-252; 327-339. Springer, 2011
