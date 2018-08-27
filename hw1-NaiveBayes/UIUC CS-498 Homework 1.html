@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="homework-pic.jpg" alt="DAF waves at camera with
+blue drysuit glove in very murky water",
+width=120, height=60>
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 1: Due 5 Feb 2017 23h59 (Mon; midnight)</h1>
+<p>&nbsp;</p>
+<p>You should do this homework on your own -- one submission per student, and by submitting you are certifying the homework is your work. </p>
+<p><strong>Submission:</strong> Course submission policy is <a href="submission-policy.html"> here </a> </p>
+<h2 align="left">&nbsp;</h2>
+</center>
+
+<ol>
+  <li> <strong> Problem 1 </strong>
+
+ <p> I strongly advise you use the  R language for this homework (but word is out on Piazza that you could use
+ Python; note I don't know if packages are available in Python). You will have a place to upload your code with the submission.</p>
+<p> The UC Irvine machine learning data repository hosts a famous
+  collection of data on whether a patient has diabetes (the Pima
+  Indians dataset), originally owned by the National Institute of
+  Diabetes and Digestive and Kidney Diseases and donated by Vincent
+  Sigillito. You can find this data at <a href="http://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes">http://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes</a>.   
+You should look over the site and check the description of the data. In the "Data Folder" directory, the primary file you need is named "pima-indians-diabetes.data". This data has a set of attributes of patients, and a categorical variable telling whether the patient is diabetic or not. For several attributes in this data set, a value of 0 may indicate a missing value of the variable.</p>
+   <ul>
+
+<li> <strong> Part 1A </strong>
+Build a simple naive Bayes classifier to classify this data set. We will use 20% of the data for evaluation and the other 80% for training. There are a total of 768 data-points. 
+<p> You should use a normal distribution to model each of the class-conditional distributions. You should write this classifier yourself (it's quite straight-forward).
+</p><p>
+Report the accuracy of the classifier on the 20% evaluation data, where accuracy is the number of correct predictions as a fraction of total predictions.
+</p></li>
+
+<li> <strong> Part 1B</strong>
+Now adjust your code so that, for attribute 3 (Diastolic blood pressure), attribute 4 (Triceps skin fold thickness), attribute 6 (Body mass index), and attribute 8 (Age), it regards a value of 0 as a missing value when estimating the class-conditional distributions, and the posterior. R uses a special number NA to flag a missing value. Most functions handle this number in special, but sensible, ways; but you'll need to do a bit of looking at manuals to check.
+
+<p> 
+Report the accuracy of the classifier on the 20% that was held out for evaluation.</p>
+</li>
+
+<li> <strong> Part 1C</strong>
+Now use the caret and klaR packages to build a naive bayes classifier for this data, assuming that no attribute has a missing value. The caret package does cross-validation (look at train) and can be used to hold out data. You should do 10-fold cross-validation.  You may find the following fragment helpful
+	
+	<p>train (features, labels, classifier,
+       trControl=trainControl(method='cv',number=10))</p>
+	
+The klaR package can estimate class-conditional densities using a density estimation procedure that I will describe much later in the course. I have not been able to persuade the combination of caret and klaR to handle missing values the way I'd like them to, but that may be ignorance (look at the na.action argument).
+
+<p> Report the accuracy of the classifier on the held out 20% </p>
+</li>
+<li> <strong> Part 1-D</strong>
+
+Now install SVMLight, which you can find at <a href="http://svmlight.joachims.org"> http://svmlight.joachims.org</a>, via the interface in klaR (look for svmlight in the manual) to train and evaluate an SVM to classify this data. For training the model, use:
+	
+	<p> svmlight (features, labels, pathsvm)</p>
+	
+You don't need to understand much about SVM's to do this as we'll do that in following exercises. You should NOT substitute NA values for zeros for attributes 3, 4, 6, and  8.
+
+<p> Using the predict function in R, report the accuracy of the
+classifier on the held out 20% </p>
+<p> <strong> Hint </strong> 
+If you are having trouble invoking svmlight from within R Studio, make sure your svmlight executable directory is added to your system path. Here are some instructions about editing your system path on various operating systems: <a href="https://www.java.com/en/download/help/path.xml">https://www.java.com/en/download/help/path.xml</a> You would need to restart R Studio (or possibly restart your computer) afterwards for the change to take effect.
+</p>
+</li>
+</ul>
+<li> <strong> Problem 2</strong> 
+<p> For this assignment, you should do your coding in R once again, but you may use libraries for the algorithms themselves.</p>
+
+<p> The MNIST dataset is a dataset of 60,000 training and 10,000 test
+examples of handwritten digits, originally constructed by Yann Lecun,
+Corinna Cortes, and Christopher J.C. Burges. It is very widely used to
+check simple methods. There are 10 classes in total ("0" to "9"). This
+dataset has been extensively studied, and there is a history of
+methods and feature construc- tions at <strong> <a
+href="https://en.wikipedia.org/wiki/MNIST_database">
+https://en.wikipedia.org/wiki/MNIST_database </a> </strong> and at the
+original site,
+<strong><a href="http://yann.lecun.com/exdb/mnist/"> http://yann.lecun.com/exdb/mnist/ </a> </strong>. You should notice that the best methods perform extremely well.</p>
+
+<p> There is also a version of the data that was used for a Kaggle
+competition. I used it for convenience so I wouldn't have to
+decompress Lecun's original format. I found it at <strong> <a
+href="http://www.kaggle.com/c/digit-recognizer"> http://www.kaggle.com/c/digit-recognizer </a> </strong>.</p>
+
+<p> If you use the original MNIST data files from <strong><a href="http://yann.lecun.com/exdb/mnist/">
+http://yann.lecun.com/exdb/mnist/ </a> </strong>, the dataset is stored in an
+unusual format, described in detail on the page. You should begin by
+reading over the technical details. Writing your own reader is pretty
+simple, but web search yields readers for standard packages. There is
+reader code for R available (at least) at <strong>
+<a
+href="https://stackoverflow.com/questions/21521571/how-to-read-mnist-database-in-r">
+https://stackoverflow.com/questions/21521571/how-to-read-mnist-database-in-r
+</a> </strong>. Please note that if you follow the recommendations in the accepted
+answer there at <strong> <a href="https://stackoverflow.com/a/21524980"> https://stackoverflow.com/a/21524980 </a> </strong>, you must
+also provide the readBin call with the flag signed=FALSE since the
+data values are stored as unsigned integers. You need to use R for
+this course, but for additional reference, there is reader code in
+MATLAB available at <strong>
+<a
+href="http://ufldl.stanford.edu/wiki/index.php/Using_the_MNIST_Dataset">
+http://ufldl.stanford.edu/wiki/index.php/Using_the_MNIST_Dataset </a> </strong>. </p>
+
+<p> Regardless of which format you find the dataset stored in, the
+dataset consists of 28 x 28 images. These were originally binary
+images, but appear to be grey level images as a result of some
+anti-aliasing. I will ignore mid grey pixels (there aren't many of
+them) and call dark pixels "ink pixels", and light pixels "paper
+pixels"; you can modify the data values with a threshold to specify
+the distinction, as described here <strong>
+<a href="https://en.wikipedia.org/wiki/Thresholding_(image_processing)">
+https://en.wikipedia.org/wiki/Thresholding_(image_processing) </a> </strong>. The
+digit has been centered in the image by centering the center of
+gravity of the image pixels, but as mentioned on the original site,
+this is probably not ideal. Here are some options for re-centering the
+digits that I will refer to in the exercises. </p>
+
+<ul> <li> Untouched: Do not re-center the digits, but use the images as is.</li>
+
+<li> Bounding box: Construct a 20 x 20 bounding box so that the
+horizontal (resp. vertical) range of ink pixels is centered in the
+box.</li>
+
+<li>Stretched bounding box: Construct a 20 x 20 bounding box so that the
+horizontal (resp. vertical) range of ink pixels runs the full
+horizontal (resp. vertical) range of the box. Obtaining this
+representation will involve rescaling image pixels: you find the
+horizontal and vertical ink range, cut that out of the original image,
+then resize the result to 20 x 20. Once the image has been re-centered,
+you can compute features. <p></p></li>
+	Here are some pictures, which may help<p></p>
+	<img src="bounding_v2.png" alt="Illustrations of the bounding box options described in text",>
+</center>
+	</ul>
+	
+
+<ul> <li> <strong> Part 2A </strong>
+
+<p>Investigate classifying MNIST using naive Bayes. Fill in the
+  accuracy values for the four combinations of Gaussian v. Bernoulli
+  distributions and untouched images v. stretched bounding
+  boxes in a table like this. Please use 20 x 20 for your bounding box dimensions. </p>
+<table width="400" border="1">
+  <tbody>
+    <tr>
+      <th scope="col"> Accuracy</th>
+      <th scope="col">Gaussian</th>
+      <th scope="col">Bernoulli</th>
+    </tr>
+    <tr>
+      <th scope="row">Untouched images</th>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <th scope="row">Stretched bounding box</th>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> Which distribution (Gaussian or Bernoulli) is better for untouched pixels? Which is better for stretched bounding box images?</p></li>
+<li>  <strong> Part 2B </strong>
+Investigate classifying MNIST using a decision forest. For this you should use a library. For your forest construction, try out and compare the combinations of parameters shown in the table (i.e. depth of tree, number of trees, etc.) by listing the accuracy for each of the following cases: untouched raw pixels; stretched bounding box. Please use 20 x 20 for your bounding box dimensions.  In each case, fill in a table like those
+shown below.
+<table width="400" border="1">
+  <tbody>
+    <tr>
+      <th scope="col">Accuracy</th>
+      <th scope="col">depth = 4</th>
+      <th scope="col">depth = 8</th>
+      <th scope="col">depth = 16</th>
+    </tr>
+    <tr>
+      <th scope="row">#trees = 10</th>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <th scope="row">#trees = 20</th>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <th scope="row">#trees = 30</th>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+</ul></li></li>
+</ol>
+<center class="style1">
+  <p>&nbsp;</p>
+  <p align="left">&nbsp;</p>
+</center>
+<h3 align="center">&nbsp;</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
