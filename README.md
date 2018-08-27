@@ -9,6 +9,9 @@ Most of the assignments consist of 3 parts:
 * improve the algorithm to achieve better solution  
 Each assignment folder includes the source code and a report.  
 
-Detailed description of each assignment can be found at the [course homepage](http://luthuli.cs.uiuc.edu/~daf/courses/AML-18/AML-HW-1.html).
+Detailed description of each assignment can be found at the [course homepage](http://luthuli.cs.uiuc.edu/%7Edaf/courses/AML-18/aml-home.html).  
+Associated [text book](https://d18ky98rnyall9.cloudfront.net/_15cea9fc0a955b2bc130dcbe71dfdbe5_learning-book-15-Jan.pdf?Expires=1535500800&Signature=iwuq9swf4lbvFN7T6X6V9lZPSH1yb2Ov~tR84JuvCorpWBCOZOOCwS1WeWEVbsYi0mEM9DItSfg~GK63YJka8UEGb0GKmFTuS4v7F0YpefVpM7-bRq0ycae8f3DzOawFWjfk53Xu7tkZYlUVzOqpBnLD4vVtLth4Zsb1WK1z1dE_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
+
+
 
 
