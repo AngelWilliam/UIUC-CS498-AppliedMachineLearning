@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="duckattack.jpg" alt="A cranky female duck mallard, I think tries to grab a piece of cheese sandwich from a child in a punt.", width=128, height=72>
+	
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 4: Due 5 Mar 2018 23h59 (Mon; midnight)</h1>
+<p>&nbsp;</p>
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+<p><strong>Submission:</strong> Homework 2 submission details TBA. </p>
+	<p> You may use any programming language that amuses you for this homework. </p>
+<h2 align="left">&nbsp;</h2>
+</center>
+
+
+ <strong> Problem 1 </strong>
+<p> You can find a dataset dealing with European employment in 1979 at <a href="http://lib.stat.cmu.edu/DASL/Stories/EuropeanJobs.html"> http://lib.stat.cmu.edu/DASL/Stories/EuropeanJobs.html</a>. This dataset gives the percentage of people
+employed in each of a set of areas in 1979 for each of a set of European countries.
+<strong> Notice </strong> this dataset contains only 26 data points.  That's fine; it's intended to give you 
+some practice in visualization of clustering.
+	<ol>
+<li> Use an agglomerative clusterer to cluster this data. Produce a dendrogram
+of this data for each of single link, complete link, and group average clustering. You should label the countries on the axis. What structure in the
+data does each method expose? it's fine to look for code, rather than writing your own. Hint: I made plots I liked a lot using R's hclust clustering
+function, and then turning the result into a phylogenetic tree and using a
+fan plot, a trick I found on the web; try plot(as.phylo(hclustresult),
+type='fan'). You should see dendrograms that "make sense" (at least
+if you remember some European history), and have interesting differences.
+		</li>
+<li>Using k-means, cluster this dataset. What is a good choice of k for this
+	data and why?</li>
+	</ol></p>
+    
+
+	<strong>Problem 2</strong> <p>  Do exercise 6.2 in the Jan 15 version of the course text </p>
+    <strong> Questions about the homework</strong>  <ol> <li>Can we use linear vector quantization functions like lvqinit, lvqtest, lvq1 available in the 'class' library in R for this exercise? <p><strong> Answer </strong> sure; don't know how well they work for this, as haven't used the package.  For this one, it may be simpler to build your own than to understand the package</p></li>
+    <li>How should we handle test/train splits? <p><strong> Answer </strong> You should not test on examples that you used to build the dictionary, but you 
+    can train on them.  In a perfect world, I would split the volunteers into a dictionary portion (about half), then do a test/train split for the classifier on the remaining half.  You can't do that, because for some signals there are very few volunteers.  For each category, choose 20% of the signals (or close!) to be test.  Then use the others to both build the dictionary and build the classifier. </p></li>
+    <li>When we carve up the signals into blocks for making the dictionary, what do we do about leftover bits at the end of the signal? <p><strong> Answer </strong> Ignore them; they shouldn't matter (think through the logic of the method again if you're uncertain about this)</p></li></ol>
+ 
+
+</body>
+</html>

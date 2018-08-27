@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="planeinterior.jpg" alt="The interior of a sunken 727, in low light.", width=128, height=72>
+	
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 6: Due 26 Mar 2018 23h59 (Mon; midnight)</h1>
+
+<strong>  I have been pressured to slip this, and have
+      succumbed to this temptation; due date is now 2 April 2018</strong> <em> However, I wouldn't rely on this working every time</em>
+<p>&nbsp;</p>
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+<p><strong>Submission:</strong> Homework 6 submission details as for earlier homeworks. </p>
+	<p> Be careful about your choice of programming environment for this homework.  You must use glmnet (the python lasso tool has given trouble in the past).  I have had real problems with glmnet in Matlab.  I very strongly advise using glmnet in R.</p>
+<h2 align="left">&nbsp;</h2>
+</center>
+<ol>
+<li> <strong> Linear regression with various regularizers </strong> The UCI Machine Learning dataset repository hosts a dataset giving features of music, and the latitude and longitude from which that 
+music originates <a href="https://archive.ics.uci.edu/ml/datasets/Geographical+Original+of+Music">here</a>.  Investigate methods to predict latitude and longitude from these features, as below.  <strong> There are actually two versions of this dataset.  Either one is OK by me, but I think you'll find the one with more independent variables more interesting. </strong> You should
+ignore outliers <strong> (by this I mean you should ignore the whole question; do not try to deal with them)</strong>.  You should regard latitude and longitude as entirely independent.  
+<ul> 
+<li> First, build a straightforward linear regression of latitude (resp. longitude) against features.  What is the R-squared?  Plot a graph evaluating each regression.  </li>
+<li> Does a Box-Cox transformation improve the regressions? <strong> Notice that the dependent variable has some negative values, which Box-Cox doesn't like.  You can deal with this by remembering that these are angles, so you get to choose the origin.</strong> why do you say so? For the rest of the exercise, use the transformation if it does improve things, otherwise, use the raw data.</li> 
+<li> Use glmnet to produce:
+<ul>
+<li> A regression regularized by L2 (equivalently, a ridge regression).  You should estimate the regularization coefficient that produces the minimum error.  Is the regularized regression better than the unregularized regression? 
+</li> 
+<li> A regression regularized by L1 (equivalently, a lasso regression).  You should estimate the regularization coefficient that produces the minimum error.  How many variables are used by this regression? Is the regularized regression better than the unregularized regression? 
+</li> 
+<li> A regression regularized by elastic net (equivalently, a regression regularized by a convex combination of L1 and L2).  Try three values of alpha, the weight setting how big L1 and L2 are. You should estimate the regularization coefficient that produces the minimum error.  How many variables are used by this regression? Is the regularized regression better than the unregularized regression? 
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li> <strong> Logistic regression </strong> The UCI Machine Learning dataset repository hosts a dataset giving whether a Taiwanese credit card user defaults against a variety of features <a href="http://archive.ics.uci.edu/ml/datasets/default+of+credit+card+clients"> here</a>.  Use logistic regression to predict whether the user defaults.  You should ignore outliers, but you should try the
+various regularization schemes we have discussed.
+</li>
+
+</ol>
+
+</body>
+</html>
+
+

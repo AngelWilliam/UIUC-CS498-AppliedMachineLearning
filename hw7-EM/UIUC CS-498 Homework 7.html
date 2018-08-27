@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="lookingup20m.jpg" alt="Looking up at the surface along a cliff face from 20m", width=100, height=76>
+	
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 7: Due 9 April 2018 23h59 (Mon; midnight)</h1>
+
+
+<p>&nbsp;</p>
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+<p><strong>Submission:</strong> Homework 7 submission details as for earlier homeworks. </p>
+	<p> No programming environment warnings for this homework.</p>
+<h2 align="left">&nbsp;</h2>
+</center>
+
+<li> <strong> EM Topic models </strong> The UCI Machine Learning dataset repository hosts several datasets recording word counts for documents <a href="https://archive.ics.uci.edu/ml/datasets/Bag+of+Words">here</a>.  You will use the NIPS dataset.  You will find (a) a table of word counts per document and (b) a vocabulary list for this dataset at the link.  You must implement the multinomial mixture of topics model, lectured in class.  For this problem, you
+should write the clustering code yourself (i.e. not use a package for clustering).
+<ul> 
+<li> Cluster this to 30 topics, using a simple mixture of multinomial topic model, as lectured in class.  </li>
+<li> Produce a graph showing, for each topic, the probability with which the topic is selected. </li> 
+<li> Produce a table showing, for each topic, the 10 words with the highest probability for that topic. </li> 
+</ul>
+</li>
+<li> <strong> Image segmentation using EM </strong> You can segment an image using a clustering method - each segment is the cluster center to which a pixel belongs.  In this exercise, you will represent an image pixel by its r, g, and b values (so use color images!).  Use the EM algorithm applied to the mixture of normal distribution model lectured in class to cluster image pixels, then segment the image by mapping each pixel to the cluster center with the highest value of the posterior probability for that pixel.  You must implement the EM algorithm yourself (rather than using a package).  Test images are <a href="EMHWPix"> here</a>, and you should display results for all three of them.  Till then, use any color image you care to.
+<ul> <li> Segment each of the test images to 10, 20, and 50 segments.  You should display these segmented images as images, where each pixel's color is replaced with the mean color of the closest segment </li>
+<li> We will identify one special test image.  You should segment this to 20 segments using five different start points, and display the result for each case.  Is there much variation in the result?<strong>  The test image is the sunset image </strong></li>
+</ul>
+
+
+</body>
+</html>
+
+

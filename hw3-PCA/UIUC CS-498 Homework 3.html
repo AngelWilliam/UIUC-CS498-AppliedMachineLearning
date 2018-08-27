@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="fishattack.jpg" alt="A cranky male largemouth bass tries to chase a diver from its nest.",
+width=120, height=60>
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 3: Due 19 Feb 2017 23h59 (Mon; midnight)</h1>
+<p>&nbsp;</p>
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+<p><strong>Submission:</strong> Course submission policy is <a href="submission-policy.html"> here </a> </p>
+	<p> You may use any programming language that amuses you for this homework. </p>
+<h2 align="left">&nbsp;</h2>
+</center>
+
+
+ <strong> Problem 1 </strong>
+<p> CIFAR-10 is a dataset of 32x32 images in 10 categories, collected by Alex
+Krizhevsky, Vinod Nair, and Geoffrey Hinton. It is often used to evaluate
+machine learning algorithms. You can download this dataset from <a href="https://
+www.cs.toronto.edu/~kriz/cifar.html"> https://
+www.cs.toronto.edu/~kriz/cifar.html.</a>
+	</p>
+	<ol>
+<li> For each category, compute the mean image and the first 20 principal
+components. Plot the error resulting from representing the images of each
+category using the first 20 principal components against the category.
+		</li>
+	<li> Compute the distances between mean images for each pair of classes. Use
+principal coordinate analysis to make a 2D map of the means of each
+categories. For this exercise, compute distances by thinking of the images
+		as vectors.</li>
+<li> Here is another measure of the similarity of
+two classes. For class A and class B, define E(A | B) to be the average
+error obtained by representing all the images of class A using the mean
+of class A and the first 20 principal components of class B. Now define
+the similarity between classes to be (1/2)(E(A | B) + E(B | A)). If A and B are very similar, then 
+	this error should be small, because A's principal components should be good at representing B.
+	But if they are very different, then A's principal components should represent B poorly. In turn, the similarity measure should be big.
+	Use
+principal coordinate analysis to make a 2D map of the classes. Compare
+	this map to the map in the previous exercise? are they different? why?</li>
+	</ol>
+ 
+
+<center class="style1">
+  <p>&nbsp;</p>
+  <p align="left">&nbsp;</p>
+</center>
+<h3 align="center">&nbsp;</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

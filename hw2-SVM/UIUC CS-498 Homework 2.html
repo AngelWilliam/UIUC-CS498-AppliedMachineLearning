@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="hw-2-pic.jpg" alt="A view from inside a small wreck, looking out a door.",
+width=120, height=60>
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 2: Due 12 Feb 2017 23h59 (Mon; midnight)</h1>
+<p>&nbsp;</p>
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+<p><strong>Submission:</strong> Course submission policy is <a href="submission-policy.html"> here </a> </p>
+<h2 align="left">&nbsp;</h2>
+</center>
+
+<ol>
+  <li> <strong> Problem 1 </strong>
+
+ <p> You may use any programming language that amuses you for this homework. </p>
+	 <p> The UC Irvine machine learning data repository hosts a collection of data on
+adult income, donated by Ronny Kohavi and Barry Becker. You can find this
+data at <a href="https://archive.ics.uci.edu/ml/datasets/Adult">https://archive.ics.uci.edu/ml/datasets/Adult</a> For each record, there is
+a set of continuous attributes, and a class "less than 50K" or "greater than 50K".
+		 There are 48842
+examples. You should use only the continuous attributes (see the description on
+the web page) and drop examples where there are missing values of the continuous attributes. Separate the resulting dataset randomly into 10% validation,
+														   10% test, and 80% training examples.</p>
+
+<p>Write a program to train a support vector machine on this data using stochastic
+gradient descent. You should not use a package to train the classifier (that's the point), but your own code. You should ignore the id number, and use
+the continuous variables as a feature vector. You should scale these variables so
+that each has unit variance. You should search for an appropriate value of the
+regularization constant, trying at least the values [1e-3, 1e-2, 1e-1, 1].
+Use the validation set for this search.
+You should use at least 50 epochs of at least 300 steps each. In each epoch,
+you should separate out 50 training examples at random for evaluation (call this the set held out for the epoch). You
+should compute the accuracy of the current classifier on the set held out for
+	the epoch every 30 steps. You should produce:</p>
+	  <ul> <li>
+ A plot of the accuracy every 30 steps, for each value of the regularization
+		  constant.</li>
+		  <li>
+ A plot of the magnitude of the coefficient vector every 30 steps, for each value of the regularization
+		  constant.</li>
+<li> Your estimate of the best value of the regularization constant, together
+	with a brief description of why you believe that is a good value.</li>
+		  <li> Your estimate of the accuracy of the best classifier on the 10% test dataset data</li></ul>
+	  
+</li>
+</ol>
+<center class="style1">
+  <p>&nbsp;</p>
+  <p align="left">&nbsp;</p>
+</center>
+<h3 align="center">&nbsp;</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

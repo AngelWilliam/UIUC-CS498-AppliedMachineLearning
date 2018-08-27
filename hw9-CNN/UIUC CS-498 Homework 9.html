@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+
+
+  
+
+
+  
+  
+  
+  <title>UIUC CS-498 Homework 1</title>
+  <meta name="generator" content="BBEdit 6.5.2">
+  <style type="text/css">
+<!--
+.style1 {font-family: "Times New Roman", Times, serif}
+-->
+  </style>
+</head>
+
+
+<body style="background-color: rgb(255, 204, 153);" link="#0000ff" alink="#00ff00" vlink="#ff00ff">
+
+
+
+<center class="style1"> </center>
+
+
+
+
+
+
+<center>
+<h2>D.A. Forsyth --- 3310 Siebel Center</h2>
+
+<img src="lookingup20m.jpg" alt="Looking up at the surface along a cliff face from 20m", width=100, height=76>
+	
+</center>
+
+<p><strong>TA's:</strong> </p>
+<ul>
+  <li> <strong> MCS-DS version of the course</strong>
+  <ul> <li> Krishna Kothapalli <strong> Lead </strong> </li>
+  <li> Daniel Calzada </li>
+  <li> Taiyu Dong </li>
+  <li> Shreya Rajpal </li>
+  <li> Ehsan Saleh </li>
+</ul></li>
+<li>   <strong> Online version of the course </strong>
+<ul> <li> Binglin Chen </li>
+</ul>
+<li> <strong> In person version of the course </strong>
+  <ul> <li> Christopher Benson</li>
+  <li> Ji Li</li>
+  <li> Maghav Kumar </li>
+</ul></li></li></ul>
+
+
+<p>You may do this homework in groups of up to 3 contributors.  Groups of 1 or
+	of 2 are just fine, too.  A group can
+	consist of any mixture of any type of student (MSCS-DS/Online/Face). We do not offer coordination services for complex
+	group interactions, and you may want to take this into account when forming your
+	group.   </p>
+
+
+<center class="style1"><p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Homework 9 (Take home Final): Due 10 May 2018 23h59 (Thur; midnight)</h1>
+	<p><strong> No late submissions, resubmissions, etc.!</strong> Notice that the last part is <strong>required</strong> for students taking the 4-hour version of the course.  It is <strong> optional</strong> for students taking the 3-hour version of the course. If you are doing the 3-hour version of the course, we cannot offer you credit for doing this part, <strong> however </strong>you may very well enjoy it, and it will do you a great deal of good if you take it seriously.</p>
+	</center>
+
+<p> <strong> Convolutional neural networks: </strong> Tensorflow is an environment for building, among other things, neural networks.  You can build multilayer networks; convolutional layers; and residual networks using tensorflow. 
+There is a tool called tensorboard, which will display the progress of learning.  This homework <strong> does not </strong> require a GPU, and you <strong> will not</strong> be graded on the accuracy of your final classifier (other than perhaps losing points if it is wholly inconsistent with a reasonable number). </p>
+<ul>
+<li> Obtain and install Tensorflow, <a href="https://www.tensorflow.org/install/"> here. </a> Be aware the install can be exciting (I had to update
+a variety of packages to install, discovered that 1.7 caused my mac to barf, and went to 1.5; tensorflow then yelled at me because "Your CPU supports instructions that this TensorFlow binary was not compiled to use" but nothing bad has happened so far). </li>
+<li> Go through the MNIST tutorial <a href="https://www.tensorflow.org/tutorials/layers"> here.</a>   You may find the tensorboard tutorial <a href="https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard"> here. </a> helpful.  Insert appropriate lines of code into the tensorflow example to log the accuracy on tensorboard every 100 batches, for at least 2000 batches.  You should screen capture the accuracy graph from tensorboard, and submit this. </li>
+<li>  Modify the architecture that is offered in the MNIST tutorial to get the best accuracy you can.  I made three convolutional layers of smaller depth (i.e. the 32 went to 8), dropped the max pooling, and used three layers. 
+Submit a screen capture of tensorboard graphs of accuracy.  We will make it possible for people to compare graphs anonymously.  This is to allow people to show off how well their model is doing, and see how others are doing; it's not required, and won't be graded, but it's been a source of fun and excitement in the past. <ul> <li> Here is how to submit graphs for comparision.  Go to this <a href="https://goo.gl/forms/EIusPh0H7aj3DRPR2"> Google form</a> and supply what it asks for.</li><li>On that page, you'll see a link to results; press that, and you'll get a collection of tensorboard graphs that have been submitted</li></ul></li>
+	
+<li>  Go through the CIFAR-10 tutorial <a href="https://www.tensorflow.org/tutorials/deep_cnn"> here</a>, and ensure you can run the code.   Note the warning at the top: "This tutorial is intended for advanced users of TensorFlow and assumes expertise and experience in machine learning."  Enjoy the sense that you are one of these.  Finally, insert appropriate lines of code into the tensorflow example to log the accuracy on tensorboard every 100 batches, for at least 2000 batches.  You should screen capture the accuracy graph from tensorboard, and submit this. </li>
+<li>  If you are taking the 4-hour (online) version of this class, this is <strong> required</strong>.  For all others, this part is <strong> optional</strong>.  Modify the architecture that is offered in the CIFAR-10 tutorial to get the best accuracy you can.  Anything better than about 93.5% will be comparable with current research.  Be aware that people with bigger computers will likely do better at this exercise (so I won't make grades depend on accuracy).  Submit a screen capture of tensorboard graphs of accuracy. We will make it possible for people to compare these graphs anonymously.This is to allow people to show off how well their model is doing, and see how others are doing; it's not required, and won't be graded, but it's been a source of fun and excitement in the past. <ul> <li> Here is how to submit graphs for comparision.  Go to this <a href="https://goo.gl/forms/ij3qm5hx1gu0E8lE2"> Google form</a> and supply what it asks for.</li><li>On that page, you'll see a link to results; press that, and you'll get a collection of tensorboard graphs that have been submitted. There may be two junk PDF's submitted by DAF to test the system; you can ignore those.</li></ul></li></li>
+</ul>
+
+<center class="style1">
+  <p>&nbsp;</p>
+  <p align="left">&nbsp;</p>
+</center>
+<h3 align="center">&nbsp;</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
